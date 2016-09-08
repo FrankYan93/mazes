@@ -1,7 +1,7 @@
 require_relative 'maze_class'
 
 def test(n,m,begX,begY,endX,endY,file)
-  file.puts "It's the test of #{n}*#{m} maze,begin at point(#{begX},#{begY}),end at point(#{endX},#{endY})!!!!"
+  file.puts "It's the test of #{n}*#{m} maze,begin at point(#{begX+1},#{begY+1}),end at point(#{endX+1},#{endY+1})!!!!"
   maze_test=Maze.new(n,m);
   file.puts "Maze#load:"
   maze_test.load

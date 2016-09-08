@@ -73,16 +73,22 @@ class Maze
     return false
   end
 
+  def print_trace(testFile,i)
+    x=@trace[i][0]+1
+    y=@trace[i][1]+1
+    testFile.print "[#{x},#{y}]"
+  end
   def trace(begX, begY, endX, endY,testFile)
     @trace=[]
     solve(begX, begY, endX, endY)
     lastIndex=@trace.length()-1;
     return "Maze#trace:No way out!" if lastIndex<0
     for i in (0...lastIndex)
-      testFile.print @trace[i]
+      print_trace(testFile,i)
       testFile.print "->"
     end
-    testFile.print @trace[lastIndex];
+    print_trace(testFile,lastIndex)
+    testFile.puts ''
     return "Maze#trace:This is one of the ways to go!"
   end
 end
