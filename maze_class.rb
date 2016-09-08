@@ -2,8 +2,8 @@ require "matrix"
 
 class Maze
   def initialize(n,m)
-    @n=n-1
-    @m=m-1
+    @n=n-3
+    @m=m-3
     @maze=[]
     @a=Vector[-1,0]#left
     @s=Vector[0,1]#down
