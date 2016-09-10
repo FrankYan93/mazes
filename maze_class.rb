@@ -51,23 +51,26 @@ class Maze
   attr_accessor:n
   attr_accessor:m
 
-  def solve(begX, begY, endX, endY)#recursion
+def solve(begX, begY, endX, endY)
+  solve_inside(begX-1, begY-1, endX-1, endY-1)
+end
+  def solve_inside(begX, begY, endX, endY)#recursion
     return false if ((begX>@n)||(begX<0)||(begY>@m)||(begY<0))
     return false if (@maze[begX][begY]>0||@maze[endX][endY]>0)
     @trace<<[begX,begY]
     return true if ((begX==endX)&&(begY=endY))
 
     unless @trace.include?([begX+@a[0], begY+@a[1]])
-      return true if solve(begX+@a[0], begY+@a[1], endX, endY)
+      return true if solve_inside(begX+@a[0], begY+@a[1], endX, endY)
     end
     unless @trace.include?([begX+@s[0], begY+@s[1]])
-      return true if solve(begX+@s[0], begY+@s[1], endX, endY)
+      return true if solve_inside(begX+@s[0], begY+@s[1], endX, endY)
     end
     unless @trace.include?([begX+@d[0], begY+@d[1]])
-      return true if solve(begX+@d[0], begY+@d[1], endX, endY)
+      return true if solve_inside(begX+@d[0], begY+@d[1], endX, endY)
     end
     unless @trace.include?([begX+@w[0], begY+@w[1]])
-      return true if solve(begX+@w[0], begY+@w[1], endX, endY)
+      return true if solve_inside(begX+@w[0], begY+@w[1], endX, endY)
     end
     @trace.pop
     return false
