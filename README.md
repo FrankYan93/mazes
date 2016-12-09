@@ -1,4 +1,4 @@
-# Mazes
+# Mazes [![Code Climate](https://codeclimate.com/github/FrankYan93/mazes/badges/gpa.svg)](https://codeclimate.com/github/FrankYan93/mazes)
 
 # Author
 + **Jiadong Yan**
