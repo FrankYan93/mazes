@@ -13,7 +13,7 @@ class Maze
     def load
         for i in 0..@n
             @maze << []
-            for j in 0..@m
+            (@m+1).times do
                 @maze[i] << 0
             end
         end
@@ -56,34 +56,25 @@ class Maze
       true
     end
 
+    def addNewPosition(t,a,begX, begY, endX, endY)
+      if checkNext(begX + a[0], begY + a[1], endX, endY)
+        nextPosition=(begX + a[0]) * @n + begY + a[1]
+        @queue<<nextPosition
+        @visitedSet[nextPosition]=t
+      end
+    end
     def solve_inside(begX, begY, endX, endY) # BFS
 
         t = begX * @n + begY
         return t if (begX == endX) && (begY = endY)
 
-        if checkNext(begX + @a[0], begY + @a[1], endX, endY)
-          nextPosition=(begX + @a[0]) * @n + begY + @a[1]
-          @queue<<nextPosition
-          @visitedSet[nextPosition]=t
-        end
+        addNewPosition(t,@a,begX, begY, endX, endY)
 
-        if checkNext(begX + @s[0], begY + @s[1], endX, endY)
-          nextPosition=(begX + @s[0]) * @n + begY + @s[1]
-          @queue<<nextPosition
-          @visitedSet[nextPosition]=t
-        end
+        addNewPosition(t,@s,begX, begY, endX, endY)
 
-        if checkNext(begX + @d[0], begY + @d[1], endX, endY)
-          nextPosition=(begX + @d[0]) * @n + begY + @d[1]
-          @queue<<nextPosition
-          @visitedSet[nextPosition]=t
-        end
+        addNewPosition(t,@d,begX, begY, endX, endY)
 
-        if checkNext(begX + @w[0], begY + @w[1], endX, endY)
-          nextPosition=(begX + @w[0]) * @n + begY + @w[1]
-          @queue<<nextPosition
-          @visitedSet[nextPosition]=t
-        end
+        addNewPosition(t,@w,begX, begY, endX, endY)
 
         if @queue.length>0
           t=@queue.shift
