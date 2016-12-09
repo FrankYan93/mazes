@@ -1,8 +1,8 @@
 class Maze
     def initialize(n, m)
-        @n = n - 3
-        @m = m - 3
-        @maze = []
+        @n = n - 3# max row index of inner maze
+        @m = m - 3# max column index of inner maze
+        @maze = []# inner maze without walls
         @a = [-1, 0] # left
         @s = [0, 1] # down
         @d = [1, 0] # right
