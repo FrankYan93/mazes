@@ -1,97 +1,118 @@
-require "matrix"
-
 class Maze
-  def initialize(n,m)
-    @n=n-3
-    @m=m-3
-    @maze=[]
-    @a=Vector[-1,0]#left
-    @s=Vector[0,1]#down
-    @d=Vector[1,0]#right
-    @w=Vector[0,-1]#up
-    @trace=[]
-  end
+    def initialize(n, m)
+        @n = n - 3
+        @m = m - 3
+        @maze = []
+        @a = [-1, 0] # left
+        @s = [0, 1] # down
+        @d = [1, 0] # right
+        @w = [0, -1] # up
+        @visitedSet = Hash.new(-1) # current number => prev
+        @queue=[]
+    end
+    def load
+        for i in 0..@n
+            @maze << []
+            for j in 0..@m
+                @maze[i] << 0
+            end
+        end
+    end
+    def redesign
+        for i in 0..@n
+            for j in 0..@m
+                @maze[i][j] = rand(2)
+            end
+        end
+    end
+    def display(testFile)
+        line = '1' * (@n + 3)
+        testFile.puts line
+        for i in 0..@n
+            testFile.print '1'
+            for j in 0..@m
+                testFile.print(@maze[i][j])
+            end
+            testFile.print '1'
+            testFile.puts ''
+        end
+        testFile.puts line
+    end
+    attr_accessor:maze
+    attr_accessor:a
+    attr_accessor:s
+    attr_accessor:d
+    attr_accessor:w
+    attr_accessor:n
+    attr_accessor:m
+    def solve(begX, begY, endX, endY)
+        solve_inside(begX - 2, begY - 2, endX - 2, endY - 2)
+    end
 
-  def load
-    for i in 0..@n
-      @maze<<[]
-      for j in 0..@m
-        @maze[i]<< 0
-      end
+    def checkNext(begX, begY, endX, endY)
+      return false if (begX > @n) || (begX < 0) || (begY > @m) || (begY < 0)
+      return false if @maze[begX][begY] > 0 || @maze[endX][endY] > 0
+      return false if @visitedSet[begX * @n + begY]!=-1
+      true
     end
-  end
 
-  def redesign
-    for i in 0..@n
-      for j in 0..@m
-        @maze[i][j] = rand(2)
-      end
-    end
-  end
+    def solve_inside(begX, begY, endX, endY) # BFS
 
-  def display(testFile)
-    line='1'*(@n+3)
-    testFile.puts line
-    for j in 0..@m
-      testFile.print '1'
-      for i in 0..@n
-        testFile.print(@maze[i][j])
-      end
-      testFile.print '1'
-      testFile.puts ''
-    end
-    testFile.puts line
-  end
+        t = begX * @n + begY
+        return t if (begX == endX) && (begY = endY)
 
-  attr_accessor:maze
-  attr_accessor:a
-  attr_accessor:s
-  attr_accessor:d
-  attr_accessor:w
-  attr_accessor:n
-  attr_accessor:m
+        if checkNext(begX + @a[0], begY + @a[1], endX, endY)
+          nextPosition=(begX + @a[0]) * @n + begY + @a[1]
+          @queue<<nextPosition
+          @visitedSet[nextPosition]=t
+        end
 
-def solve(begX, begY, endX, endY)
-  solve_inside(begX-1, begY-1, endX-1, endY-1)
-end
-  def solve_inside(begX, begY, endX, endY)#recursion
-    return false if ((begX>@n)||(begX<0)||(begY>@m)||(begY<0))
-    return false if (@maze[begX][begY]>0||@maze[endX][endY]>0)
-    @trace<<[begX,begY]
-    return true if ((begX==endX)&&(begY=endY))
+        if checkNext(begX + @s[0], begY + @s[1], endX, endY)
+          nextPosition=(begX + @s[0]) * @n + begY + @s[1]
+          @queue<<nextPosition
+          @visitedSet[nextPosition]=t
+        end
 
-    unless @trace.include?([begX+@a[0], begY+@a[1]])
-      return true if solve_inside(begX+@a[0], begY+@a[1], endX, endY)
-    end
-    unless @trace.include?([begX+@s[0], begY+@s[1]])
-      return true if solve_inside(begX+@s[0], begY+@s[1], endX, endY)
-    end
-    unless @trace.include?([begX+@d[0], begY+@d[1]])
-      return true if solve_inside(begX+@d[0], begY+@d[1], endX, endY)
-    end
-    unless @trace.include?([begX+@w[0], begY+@w[1]])
-      return true if solve_inside(begX+@w[0], begY+@w[1], endX, endY)
-    end
-    @trace.pop
-    return false
-  end
+        if checkNext(begX + @d[0], begY + @d[1], endX, endY)
+          nextPosition=(begX + @d[0]) * @n + begY + @d[1]
+          @queue<<nextPosition
+          @visitedSet[nextPosition]=t
+        end
 
-  def print_trace(testFile,i)
-    x=@trace[i][0]+1
-    y=@trace[i][1]+1
-    testFile.print "[#{x},#{y}]"
-  end
-  def trace(begX, begY, endX, endY,testFile)
-    @trace=[]
-    solve(begX, begY, endX, endY)
-    lastIndex=@trace.length()-1;
-    return "Maze#trace:No way out!" if lastIndex<0
-    for i in (0...lastIndex)
-      print_trace(testFile,i)
-      testFile.print "->"
+        if checkNext(begX + @w[0], begY + @w[1], endX, endY)
+          nextPosition=(begX + @w[0]) * @n + begY + @w[1]
+          @queue<<nextPosition
+          @visitedSet[nextPosition]=t
+        end
+
+        if @queue.length>0
+          t=@queue.shift
+          begX=t / @m
+          begY=t % @m
+          return solve_inside(begX, begY, endX, endY)
+        else
+          return -1
+        end
     end
-    print_trace(testFile,lastIndex)
-    testFile.puts ''
-    return "Maze#trace:This is one of the ways to go!"
-  end
+
+
+    def trace(begX, begY, endX, endY, testFile)
+
+        return 'Maze#trace:No way out!' if @maze[begX-2][begY-2] > 0 || @maze[endX-2][endY-2] > 0
+
+        @queue<<((begX-2) * @n + (begY-2))
+        @visitedSet[(begX-2) * @n + (begY-2)]=-2
+
+        solve(begX, begY, endX, endY)
+        return 'Maze#trace:No way out!' if (t=@visitedSet[(endX-2) * @n + (endY-2)]) < 0
+        testFile.print "[#{endX},#{endY}]"
+        while t>-1 do
+
+          testFile.print '<-'
+          testFile.print "[#{(t / @m)+2},#{(t % @n)+2}]"
+          t=@visitedSet[t]
+        end
+        testFile.puts ''
+        'Maze#trace:This is one of the ways to go!'
+    end
 end

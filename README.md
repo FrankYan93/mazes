@@ -1,4 +1,9 @@
 #Mazes
+
+# Author
++ Jiadong Yan
+
+# Brief Explanation
 Except walls at 4 directions,the true maze is inside.  
 So the size of n,m should be bigger than 2,or it would never have solutions.
 I mean I define an example of **4\*4** maze as below:  
